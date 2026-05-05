@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - InstaPulse</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-gradient-insta {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%);
+        }
+    </style>
+</head>
+<body class="bg-[#fafafa] text-gray-800">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col shrink-0">
+            <div class="p-6 flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-insta flex items-center justify-center shadow-sm">
+                    <i class="fas fa-bolt text-white text-sm"></i>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800 tracking-tight">InstaPulse</h1>
+            </div>
+            
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 bg-pink-50 text-purple-600 rounded-xl transition-all">
+                    <i class="fas fa-th-large w-5 text-center"></i>
+                    <span class="font-bold text-sm">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-plus-square w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Create Post</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-lightbulb w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Optimization Advisor</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-history w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">History & Reports</span>
+                </a>
+                <a href="feed-simulation.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-pager w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Feed Simulation</span>
+                </a>
+                <a href="explore.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-compass w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Explore</span>
+                </a>
+                <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-user-circle w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Profile</span>
+                </a>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-100">
+                <button class="flex items-center space-x-3 px-4 py-2 text-gray-500 hover:text-red-500 transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                    <span class="font-medium text-sm">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+            
+            <!-- Navbar -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
+                <div class="flex items-center space-x-4 flex-1">
+                    <div class="relative w-full max-w-xs">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" placeholder="Search..." class="w-full bg-gray-50 border-none rounded-lg py-2 pl-9 pr-4 text-sm focus:ring-2 focus:ring-purple-200 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="relative">
+                        <i class="far fa-bell text-gray-500 cursor-pointer hover:text-purple-600 transition-colors"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden border border-gray-100 shadow-sm">
+                        <img src="https://i.pravatar.cc/150?u=me" alt="Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Area -->
+            <main class="flex-1 overflow-y-auto p-8 bg-white">
+                <div class="border-4 border-dashed border-gray-200 rounded-3xl h-full flex items-center justify-center">
+                    <div class="text-center">
+                        <p class="text-gray-400 font-bold text-lg">Main Dashboard Content</p>
+                        <p class="text-gray-300 text-sm mt-2">(Placeholder Skeleton)</p>
+                    </div>
+                </div>
+            </main>
+            
+        </main>
+    </div>
+
+</body>
+</html>
