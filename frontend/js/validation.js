@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+    const API_BASE_URL = "http://127.0.0.1:8000/api/auth";
+
     // Helper to toggle error states on inputs
     const showError = (inputId, show, message = '') => {
         const input = document.getElementById(inputId);
@@ -7,13 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!input || !errorEl) return;
         
         if (show) {
-            // Add error styling
             input.classList.remove('border-transparent', 'focus:border-purple-400', 'focus:ring-purple-100');
             input.classList.add('border-red-400', 'focus:border-red-500', 'focus:ring-red-100', 'bg-red-50/30');
             if (message) errorEl.textContent = message;
             errorEl.classList.remove('hidden');
         } else {
-            // Remove error styling
             input.classList.remove('border-red-400', 'focus:border-red-500', 'focus:ring-red-100', 'bg-red-50/30');
             input.classList.add('border-transparent', 'focus:border-purple-400', 'focus:ring-purple-100');
             errorEl.classList.add('hidden');
@@ -24,10 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
 
-    // Login Form Validation
+    // Login Form Validation & API Call
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             let isValid = true;
             const email = document.getElementById("email").value;
@@ -48,25 +47,50 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (isValid) {
-                // Simulate button loading state
                 const btn = loginForm.querySelector('button');
+                const originalBtnText = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing in...';
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 800);
+                btn.disabled = true;
+
+                try {
+                    // FastAPI OAuth2 expects form data, not JSON for login
+                    const formData = new FormData();
+                    formData.append('username', email); // Using email as username
+                    formData.append('password', password);
+
+                    const response = await fetch(`${API_BASE_URL}/login`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('token_type', data.token_type);
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        showError("password", true, data.detail || "Invalid email or password");
+                        btn.innerHTML = originalBtnText;
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    showError("password", true, "Connection failed. Is the server running?");
+                    btn.innerHTML = originalBtnText;
+                    btn.disabled = false;
+                }
             }
         });
         
-        // Clear errors on input
         ['email', 'password'].forEach(id => {
             document.getElementById(id).addEventListener('input', () => showError(id, false));
         });
     }
 
-    // Signup Form Validation
+    // Signup Form Validation & API Call
     const signupForm = document.getElementById("signupForm");
     if (signupForm) {
-        signupForm.addEventListener("submit", (e) => {
+        signupForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             let isValid = true;
             const name = document.getElementById("name").value;
@@ -88,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 showError("email", false);
             }
 
-            if (password.length < 6) {
-                showError("password", true);
+            if (password.length < 8) {
+                showError("password", true, "Password must be at least 8 characters.");
                 isValid = false;
             } else {
                 showError("password", false);
@@ -104,10 +128,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (isValid) {
                 const btn = signupForm.querySelector('button');
+                const originalBtnText = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Creating account...';
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 800);
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: name,
+                            email: email,
+                            password: password
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert("Account created successfully! Please login.");
+                        window.location.href = 'login.html';
+                    } else {
+                        // Show server error (e.g. username taken)
+                        const detail = Array.isArray(data.detail) ? data.detail[0].msg : data.detail;
+                        showError("email", true, detail || "Signup failed");
+                        btn.innerHTML = originalBtnText;
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    showError("email", true, "Connection failed. Is the server running?");
+                    btn.innerHTML = originalBtnText;
+                    btn.disabled = false;
+                }
             }
         });
         

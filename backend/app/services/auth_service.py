@@ -6,12 +6,17 @@ from ..utils.security import verify_password, create_access_token
 from ..schemas import Token
 
 async def authenticate_user(db: AsyncSession, form_data: OAuth2PasswordRequestForm) -> Token:
-    # We use username field from form_data to check the username
+    # Try to find the user by username first
     user = await user_service.get_user_by_username(db, username=form_data.username)
+    
+    # If not found, try to find the user by email
+    if not user:
+        user = await user_service.get_user_by_email(db, email=form_data.username)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email/username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
