@@ -21,7 +21,7 @@ if config.config_file_name is not None:
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from app.models import Base
+from app.database import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

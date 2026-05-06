@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const API_BASE_URL = "http://127.0.0.1:8000/api/auth";
+    const API_BASE_URL = "http://127.0.0.1:8001/api/auth";
 
     // Helper to toggle error states on inputs
     const showError = (inputId, show, message = '') => {
