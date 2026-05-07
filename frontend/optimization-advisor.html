@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Advisor - InstaPulse</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .bg-gradient-insta {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col shrink-0">
+            <div class="p-6 flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-insta flex items-center justify-center shadow-sm">
+                    <i class="fas fa-bolt text-white text-sm"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">InstaPulse</h1>
+            </div>
+            
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-th-large w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Dashboard</span>
+                </a>
+                <a href="create-post.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-plus-square w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Create Post</span>
+                </a>
+                <a href="optimization-advisor.html" class="flex items-center space-x-3 px-4 py-3 bg-purple-50 text-purple-600 rounded-xl transition-all">
+                    <i class="fas fa-lightbulb w-5 text-center"></i>
+                    <span class="font-bold text-sm">Optimization Advisor</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-history w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">History & Reports</span>
+                </a>
+                <a href="feed-simulation.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-pager w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Feed Simulation</span>
+                </a>
+                <a href="explore.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-compass w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Explore</span>
+                </a>
+                <a href="reels.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-video w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Reels</span>
+                </a>
+                <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all group">
+                    <i class="fas fa-user-circle w-5 text-center group-hover:text-purple-600"></i>
+                    <span class="font-medium text-sm">Profile</span>
+                </a>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-100">
+                <button class="flex items-center space-x-3 px-4 py-2 text-gray-500 hover:text-red-500 transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                    <span class="font-medium text-sm">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden">
+            
+            <!-- Top Header -->
+            <header class="h-16 bg-white border-b border-gray-200 px-8 flex items-center justify-between shrink-0">
+                <div class="relative w-96">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" placeholder="Search.." class="w-full bg-gray-100 border-transparent focus:bg-white focus:border-purple-300 rounded-lg py-2 pl-10 pr-4 text-sm outline-none transition-all">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-purple-600 transition-colors relative">
+                        <i class="far fa-bell text-lg"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="w-8 h-8 rounded-full bg-gradient-insta"></div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                
+                <div class="max-w-6xl mx-auto">
+                    <!-- Page Header -->
+                    <div class="flex justify-between items-end mb-8">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-tight">Optimization Advisor</h2>
+                            <p class="text-gray-500 mt-1 text-sm">AI-powered suggestions to maximize your post engagement.</p>
+                        </div>
+                        <button class="bg-gradient-insta text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-purple-200 transition-all flex items-center space-x-2">
+                            <i class="fas fa-magic"></i>
+                            <span>Apply All</span>
+                        </button>
+                    </div>
+
+                    <!-- Engagement Boost Banner -->
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm flex justify-between items-center mb-8 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-gradient-insta"></div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Potential Engagement Boost</h3>
+                            <p class="text-gray-500 mt-1">Apply all suggestions to maximize your reach</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-5xl font-black text-gradient">+130%</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Total Improvement</div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestion Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                        
+                        <!-- Card 1: Hashtags -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-hashtag text-xl"></i>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-tight">High Impact</span>
+                                    <span class="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full">+35%</span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Add More Relevant Hashtags</h4>
+                            <p class="text-xs text-gray-500 leading-relaxed mb-4">Your post currently has 5 hashtags. Adding 5-7 more targeted hashtags could increase reach by up to 35%.</p>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Recommendations:</p>
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <span class="text-[11px] text-purple-600 font-medium">#contentcreator</span>
+                                    <span class="text-[11px] text-purple-600 font-medium">#socialmediatips</span>
+                                    <span class="text-[11px] text-purple-600 font-medium">#instagramgrowth</span>
+                                    <span class="text-[11px] text-purple-600 font-medium">#digitalmarketing</span>
+                                    <span class="text-[11px] text-purple-600 font-medium">#contentmarketing</span>
+                                </div>
+                            </div>
+                            <button class="w-full py-2.5 border border-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">Apply Suggestion</button>
+                        </div>
+
+                        <!-- Card 2: Caption -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-font text-xl"></i>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-tight">High Impact</span>
+                                    <span class="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full">+28%</span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Optimize Caption Length</h4>
+                            <p class="text-xs text-gray-500 leading-relaxed mb-4">Your caption is only 45 characters. Captions between 125-150 characters tend to perform 28% better.</p>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Recommendations:</p>
+                                <ul class="space-y-1 mb-6">
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-plus text-[8px] mr-2 text-pink-500"></i> Add a compelling hook in first line</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-plus text-[8px] mr-2 text-pink-500"></i> Include a call-to-action</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-plus text-[8px] mr-2 text-pink-500"></i> Ask a question to encourage comments</li>
+                                </ul>
+                            </div>
+                            <button class="w-full py-2.5 border border-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">Apply Suggestion</button>
+                        </div>
+
+                        <!-- Card 3: Time -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                                    <i class="far fa-clock text-xl"></i>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-bold rounded-full uppercase tracking-tight">Medium Impact</span>
+                                    <span class="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full">+22%</span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Adjust Posting Time</h4>
+                            <p class="text-xs text-gray-500 leading-relaxed mb-4">Your scheduled time (2:00 PM) has moderate engagement. Posting at 6:00 PM could boost reach by 22%.</p>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Recommendations:</p>
+                                <ul class="space-y-1 mb-6">
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-check text-[8px] mr-2 text-green-500"></i> Best time: 6:00 PM - 8:00 PM</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-check text-[8px] mr-2 text-green-500"></i> Secondary: 9:00 AM - 11:00 AM</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-times text-[8px] mr-2 text-red-500"></i> Avoid: 12:00 AM - 6:00 AM</li>
+                                </ul>
+                            </div>
+                            <button class="w-full py-2.5 border border-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">Apply Suggestion</button>
+                        </div>
+
+                        <!-- Card 4: Visuals -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                    <i class="far fa-image text-xl"></i>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-bold rounded-full uppercase tracking-tight">Medium Impact</span>
+                                    <span class="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full">+18%</span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Enhance Visual Appeal</h4>
+                            <p class="text-xs text-gray-500 leading-relaxed mb-4">Consider applying filters or adjustments. Posts with enhanced visuals see 18% more engagement.</p>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Recommendations:</p>
+                                <ul class="space-y-1 mb-6">
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-sparkles text-[8px] mr-2 text-blue-500"></i> Increase brightness by 10-15%</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-sparkles text-[8px] mr-2 text-blue-500"></i> Add subtle contrast</li>
+                                    <li class="text-[11px] text-gray-600 flex items-center"><i class="fas fa-sparkles text-[8px] mr-2 text-blue-500"></i> Consider warm color tone</li>
+                                </ul>
+                            </div>
+                            <button class="w-full py-2.5 border border-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">Apply Suggestion</button>
+                        </div>
+
+                    </div>
+
+                    <!-- Post Performance Section -->
+                    <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm mb-12">
+                        <h3 class="text-xl font-bold text-gray-900 mb-8">How Your Post Stands Out</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            
+                            <!-- Metric 1 -->
+                            <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <i class="far fa-heart text-purple-600"></i>
+                                    <span class="text-xs font-bold text-gray-900 uppercase">Engagement Rate</span>
+                                </div>
+                                <div class="text-3xl font-black text-purple-600 mb-1">8.4%</div>
+                                <div class="text-xs text-gray-500 font-medium">Above average (+2.1%)</div>
+                            </div>
+
+                            <!-- Metric 2 -->
+                            <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <i class="far fa-comment text-pink-600"></i>
+                                    <span class="text-xs font-bold text-gray-900 uppercase">Comment Rate</span>
+                                </div>
+                                <div class="text-3xl font-black text-pink-600 mb-1">5.5%</div>
+                                <div class="text-xs text-gray-500 font-medium">Excellent performance</div>
+                            </div>
+
+                            <!-- Metric 3 -->
+                            <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <i class="far fa-bookmark text-orange-600"></i>
+                                    <span class="text-xs font-bold text-gray-900 uppercase">Save Rate</span>
+                                </div>
+                                <div class="text-3xl font-black text-orange-600 mb-1">12.3%</div>
+                                <div class="text-xs text-gray-500 font-medium">High value content</div>
+                            </div>
+
+                        </div>
+
+                        <!-- Final Actions -->
+                        <div class="flex items-center space-x-4">
+                            <button class="flex-1 bg-gradient-insta text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-purple-200 hover:-translate-y-1 transition-all">
+                                Publish to Instagram
+                            </button>
+                            <button class="px-10 py-4 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50 transition-all">
+                                Edit Post
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pro Tips -->
+                    <div class="bg-indigo-50/50 rounded-3xl p-8 border border-indigo-100 mb-8">
+                        <div class="flex items-center space-x-3 mb-8">
+                            <i class="fas fa-wand-magic-sparkles text-indigo-600"></i>
+                            <h3 class="text-sm font-black text-indigo-900 uppercase tracking-widest">Pro Tips</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white rounded-2xl p-6 border border-indigo-100 shadow-sm card-hover">
+                                <h4 class="font-bold text-gray-900 text-sm mb-2">Consistency is Key</h4>
+                                <p class="text-[11px] text-gray-500 leading-relaxed">Post regularly at your optimal times to build audience habits.</p>
+                            </div>
+                            <div class="bg-white rounded-2xl p-6 border border-indigo-100 shadow-sm card-hover">
+                                <h4 class="font-bold text-gray-900 text-sm mb-2">Engage Early</h4>
+                                <p class="text-[11px] text-gray-500 leading-relaxed">Respond to comments within the first hour for better reach.</p>
+                            </div>
+                            <div class="bg-white rounded-2xl p-6 border border-indigo-100 shadow-sm card-hover">
+                                <h4 class="font-bold text-gray-900 text-sm mb-2">Test & Learn</h4>
+                                <p class="text-[11px] text-gray-500 leading-relaxed">Try different content types to see what resonates best.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
