@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Image as ImageIcon, 
   Smile, 
@@ -20,15 +21,19 @@ import {
   Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { apiService } from '../services/api';
 import toast from 'react-hot-toast';
 
 const CreatePost = () => {
   const [caption, setCaption] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [rawFile, setRawFile] = useState<File | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showVariations, setShowVariations] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // Real-time Pulse Score Engine
   const pulseScore = useMemo(() => {
@@ -59,12 +64,19 @@ const CreatePost = () => {
   }, [caption, selectedImage]);
 
   const handleFile = (file: File) => {
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+      setRawFile(file);
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setSelectedImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setSelectedImage('video-placeholder');
+      }
+    } else {
+      toast.error('Please upload an image or video file.');
     }
   };
 
@@ -93,6 +105,7 @@ const CreatePost = () => {
 
   const removeImage = () => {
     setSelectedImage(null);
+    setRawFile(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -111,6 +124,24 @@ const CreatePost = () => {
     setCaption(text);
     setShowVariations(false);
     toast.success('Caption updated! ✍️');
+  };
+
+  const handleCreatePost = async () => {
+    if (!rawFile) {
+      toast.error('Please upload an image or video first! 📸');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiService.createPost(rawFile, caption);
+      toast.success('Post created successfully! 🚀');
+      navigate('/feed');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to create post');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const variations = [
@@ -149,7 +180,7 @@ const CreatePost = () => {
               type="file" 
               ref={fileInputRef}
               className="hidden" 
-              accept="image/*"
+              accept="image/*,video/*"
               onChange={onFileSelect}
             />
 
@@ -162,7 +193,14 @@ const CreatePost = () => {
                   exit={{ opacity: 0 }}
                   className="absolute inset-0 w-full h-full"
                 >
-                  <img src={selectedImage} alt="Selected" className="w-full h-full object-cover" />
+                  {rawFile?.type.startsWith('video/') ? (
+                    <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+                       <Zap size={48} className="text-purple-500 animate-pulse" />
+                       <span className="absolute bottom-4 text-white text-xs font-bold">Video Selected</span>
+                    </div>
+                  ) : (
+                    <img src={selectedImage} alt="Selected" className="w-full h-full object-cover" />
+                  )}
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <button 
                       onClick={(e) => { e.stopPropagation(); removeImage(); }}
@@ -184,7 +222,7 @@ const CreatePost = () => {
                     <Camera size={32} />
                   </div>
                   <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Drop your masterpiece here</h4>
-                  <p className="text-sm text-slate-400 dark:text-zinc-500 max-w-xs">Drag and drop images, or click to browse from your device.</p>
+                  <p className="text-sm text-slate-400 dark:text-zinc-500 max-w-xs">Drag and drop images/videos, or click to browse.</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -264,7 +302,6 @@ const CreatePost = () => {
                 <IconButton icon={Hash} />
               </div>
               <div className="flex items-center space-x-4">
-                {/* MOVED PULSE METER HERE */}
                 <div className="flex items-center space-x-2">
                   <PulseMeter score={pulseScore} size={40} stroke={4} />
                   <span className="text-[9px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Pulse Score</span>
@@ -319,14 +356,21 @@ const CreatePost = () => {
               <div className="flex-1 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   {selectedImage ? (
-                    <motion.img 
-                      key="post-img"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      src={selectedImage} 
-                      alt="" 
-                      className="w-full h-full object-cover" 
-                    />
+                    rawFile?.type.startsWith('video/') ? (
+                      <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center">
+                        <Zap size={64} className="text-purple-500 mb-2" />
+                        <span className="text-white text-xs font-black uppercase tracking-tighter">Video Reel</span>
+                      </div>
+                    ) : (
+                      <motion.img 
+                        key="post-img"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        src={selectedImage} 
+                        alt="" 
+                        className="w-full h-full object-cover" 
+                      />
+                    )
                   ) : (
                     <motion.div 
                       key="post-placeholder"
@@ -363,17 +407,12 @@ const CreatePost = () => {
             </div>
 
             <button 
-              onClick={() => {
-                if (!selectedImage) {
-                  toast.error('Please upload an image first! 📸');
-                } else {
-                  toast.success(`Analysis complete! Pulse Score: ${pulseScore}/100 📈`);
-                }
-              }}
-              className="w-full mt-8 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold py-4 rounded-2xl shadow-xl hover:shadow-purple-500/30 transition-all flex items-center justify-center space-x-2"
+              onClick={handleCreatePost}
+              disabled={isSubmitting}
+              className="w-full mt-8 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold py-4 rounded-2xl shadow-xl hover:shadow-purple-500/30 transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
             >
-              <Send size={18} />
-              <span>Final Pulse Check</span>
+              {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+              <span>{isSubmitting ? 'Publishing...' : 'Final Pulse Check & Publish'}</span>
             </button>
           </div>
         </motion.div>
