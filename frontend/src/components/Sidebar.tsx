@@ -24,12 +24,12 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 hidden md:flex flex-col shrink-0 h-screen transition-colors duration-300">
-      <div className="p-6 flex items-center space-x-2">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center shadow-sm">
+    <aside className="w-64 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-600 dark:bg-zinc-900 dark:bg-none border-r border-transparent dark:border-zinc-800 hidden md:flex flex-col shrink-0 h-screen transition-colors duration-300 relative overflow-hidden">
+      <div className="p-6 flex items-center space-x-2 relative z-10">
+        <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/30">
           <Zap className="text-white w-5 h-5" />
         </div>
-        <h1 className="text-xl font-bold tracking-tight dark:text-white">InstaPulse</h1>
+        <h1 className="text-xl font-black tracking-tighter text-white">InstaPulse</h1>
       </div>
       
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
@@ -42,19 +42,19 @@ const Sidebar = () => {
               to={item.path}
               className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${
                 isActive 
-                  ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' 
-                  : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800'
-              }`}
+                  ? 'bg-white/20 backdrop-blur-md text-white shadow-lg' 
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+              } ${isActive ? 'dark:bg-purple-900/20 dark:text-purple-400' : 'dark:text-zinc-400 dark:hover:bg-zinc-800'}`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-purple-600 dark:text-purple-400' : 'group-hover:text-purple-600 dark:group-hover:text-purple-400'}`} />
+              <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-white/70 group-hover:text-white'} dark:${isActive ? 'text-purple-400' : 'group-hover:text-purple-400'}`} />
               <span className={`text-sm ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
             </Link>
           );
         })}
       </nav>
       
-      <div className="p-6 text-center">
-        <p className="text-[10px] font-black text-slate-300 dark:text-zinc-700 uppercase tracking-widest">Version 2.0.4</p>
+      <div className="p-6 text-center relative z-10">
+        <p className="text-[10px] font-black text-white/40 dark:text-zinc-700 uppercase tracking-widest">Version 2.0.4</p>
       </div>
     </aside>
   );

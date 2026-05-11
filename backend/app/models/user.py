@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from ..database import Base
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -12,9 +11,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
-    created_at = Column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
-    )
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     posts = relationship("Post", back_populates="owner", cascade="all, delete")
     comments = relationship("Comment", back_populates="owner", cascade="all, delete")

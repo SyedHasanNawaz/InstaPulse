@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { 
   History as HistoryIcon, 
   Search, 
@@ -6,18 +7,37 @@ import {
   TrendingUp, 
   Calendar,
   MoreVertical,
-  Download
+  Download,
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAI } from '../context/AIContext';
+import { apiService } from '../services/api';
+import Skeleton from '../components/Skeleton';
 
 const History = () => {
-  const historyItems = [
-    { id: 1, title: 'Summer Collection Launch', date: 'Oct 12, 2023', engagement: '8.4%', score: 92, reach: '12.5k', status: 'Optimal' },
-    { id: 2, title: 'Product Showcase Reel', date: 'Oct 10, 2023', engagement: '12.1%', score: 95, reach: '45.2k', status: 'Viral' },
-    { id: 3, title: 'Customer Success Story', date: 'Oct 08, 2023', engagement: '5.2%', score: 78, reach: '8.1k', status: 'Average' },
-    { id: 4, title: 'Behind the Scenes Loop', date: 'Oct 05, 2023', engagement: '9.8%', score: 88, reach: '22.3k', status: 'Optimal' },
-    { id: 5, title: 'Flash Sale Announcement', date: 'Oct 01, 2023', engagement: '15.4%', score: 98, reach: '62.0k', status: 'Viral' },
-  ];
+  const { historyData, loadingHistory: loading, getHistoryData } = useAI();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    getHistoryData();
+  }, []);
+
+  const historyItems = historyData || [];
+
+  const filteredItems = Array.isArray(historyItems) ? historyItems.filter(item => 
+    (item?.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item?.category || "").toLowerCase().includes(searchTerm.toLowerCase())
+  ) : [];
+
+  const avgScore = filteredItems.length > 0 
+    ? Math.round(filteredItems.reduce((acc, curr) => acc + (curr?.pulse_score || 0), 0) / filteredItems.length)
+    : 0;
+
+  if (loading) {
+    return <HistorySkeleton />;
+  }
 
   return (
     <div className="pb-20 transition-colors duration-300">
@@ -29,22 +49,25 @@ const History = () => {
           <p className="text-slate-500 dark:text-zinc-400 mt-1 text-sm">Review your past performance and growth trends.</p>
         </div>
         <div className="flex items-center space-x-3">
+          <button 
+            onClick={() => getHistoryData(true)}
+            className="p-2.5 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-xl text-slate-500 hover:text-purple-500 transition-all"
+            title="Refresh Analysis"
+          >
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+          </button>
           <button className="flex items-center space-x-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-xl text-sm font-bold text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-all">
             <Download size={16} />
             <span>Export CSV</span>
-          </button>
-          <button className="flex items-center space-x-2 px-4 py-2.5 bg-slate-900 dark:bg-zinc-100 border border-slate-900 dark:border-zinc-100 rounded-xl text-sm font-bold text-white dark:text-zinc-900 hover:opacity-90 transition-all">
-            <Calendar size={16} />
-            <span>This Month</span>
           </button>
         </div>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard title="Total Reach" value="152.4k" change="+18.5%" icon={TrendingUp} color="purple" />
-        <StatCard title="Avg. Score" value="89/100" change="+4.2%" icon={ArrowUpRight} color="pink" />
-        <StatCard title="Growth Rate" value="+12.4%" change="+2.1%" icon={TrendingUp} color="orange" />
+        <StatCard title="Total Analyses" value={historyItems.length.toString()} change="+100%" icon={TrendingUp} color="purple" />
+        <StatCard title="Avg. Score" value={`${avgScore}/100`} change="+5.2%" icon={ArrowUpRight} color="pink" />
+        <StatCard title="Success Rate" value="Viral" change="+2.1%" icon={TrendingUp} color="orange" />
       </div>
 
       {/* Reports Table Card */}
@@ -60,79 +83,96 @@ const History = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500 w-4 h-4" />
               <input 
                 type="text" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search reports..." 
                 className="bg-slate-50 dark:bg-zinc-800/50 border-transparent focus:bg-white dark:focus:bg-zinc-800 rounded-lg py-2 pl-10 pr-4 text-xs outline-none transition-all dark:text-zinc-300"
               />
             </div>
-            <button className="p-2 bg-slate-50 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 rounded-lg hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-              <Filter size={18} />
-            </button>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 dark:bg-zinc-800/30">
-                <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Report Name</th>
-                <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Date</th>
-                <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Engagement</th>
-                <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">AI Score</th>
-                <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-4"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-zinc-800/50">
-              {historyItems.map((item, idx) => (
-                <motion.tr 
-                  key={item.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/20 transition-colors cursor-pointer group"
-                >
-                  <td className="px-8 py-5">
-                    <div className="font-bold text-slate-900 dark:text-zinc-200 text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{item.title}</div>
-                    <div className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">Reach: {item.reach} users</div>
-                  </td>
-                  <td className="px-8 py-5 text-xs text-slate-500 dark:text-zinc-400 font-medium">{item.date}</td>
-                  <td className="px-8 py-5 font-bold text-slate-700 dark:text-zinc-300 text-sm">{item.engagement}</td>
-                  <td className="px-8 py-5">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-12 h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" 
-                          style={{ width: `${item.score}%` }}
-                        ></div>
+          {filteredItems.length > 0 ? (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 dark:bg-zinc-800/30">
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Report Name</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Date</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Predicted Boost</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">AI Score</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 dark:text-zinc-500 uppercase tracking-widest">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50 dark:divide-zinc-800/50">
+                {filteredItems.map((item, idx) => (
+                  <motion.tr 
+                    key={item.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/20 transition-colors cursor-pointer group"
+                  >
+                    <td className="px-8 py-5">
+                      <div className="font-bold text-slate-900 dark:text-zinc-200 text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{item?.title || 'Analysis'}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">Reach: {item?.reach || '0'}</div>
+                    </td>
+                    <td className="px-8 py-5 text-xs text-slate-500 dark:text-zinc-400 font-medium">
+                        {item?.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td className="px-8 py-5 font-bold text-slate-700 dark:text-zinc-300 text-sm">{item?.engagement_rate || '0%'}</td>
+                    <td className="px-8 py-5">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-12 h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" 
+                            style={{ width: `${item?.pulse_score || 0}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs font-black text-slate-900 dark:text-zinc-200">{item?.pulse_score || 0}</span>
                       </div>
-                      <span className="text-xs font-black text-slate-900 dark:text-zinc-200">{item.score}</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-5">
-                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${
-                      item.status === 'Viral' 
-                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' 
-                        : item.status === 'Optimal'
-                        ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
-                        : 'bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400'
-                    }`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-5 text-right">
-                    <button className="p-2 text-slate-300 dark:text-zinc-600 hover:text-slate-900 dark:hover:text-zinc-300 transition-colors">
-                      <MoreVertical size={16} />
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${
+                        item?.status === 'Viral' 
+                          ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' 
+                          : item?.status === 'Optimal'
+                          ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
+                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400'
+                      }`}>
+                        {item?.status || 'Processing'}
+                      </span>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="p-20 text-center">
+                <div className="text-slate-400 dark:text-zinc-600 mb-4 flex justify-center">
+                    <HistoryIcon size={48} />
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white">No analysis history yet</h4>
+                <p className="text-sm text-slate-500 dark:text-zinc-500">Go to Optimization Advisor to start your first analysis!</p>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>
   );
 };
+
+const HistorySkeleton = () => (
+  <div className="pb-20">
+    <Skeleton className="h-10 w-64 mb-10" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <Skeleton className="h-32 w-full rounded-[2rem]" />
+      <Skeleton className="h-32 w-full rounded-[2rem]" />
+      <Skeleton className="h-32 w-full rounded-[2rem]" />
+    </div>
+    <Skeleton className="h-96 w-full rounded-[32px]" />
+  </div>
+);
 
 const StatCard = ({ title, value, change, icon: Icon, color }: any) => {
   const colorMap: any = {

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   
@@ -11,7 +13,6 @@
   /* Custom Animations */
   --animate-swing: swing 0.5s ease-in-out;
 }
-
 @keyframes swing {
   0% { transform: rotate(0deg); }
   20% { transform: rotate(15deg); }
@@ -19,6 +20,38 @@
   60% { transform: rotate(5deg); }
   80% { transform: rotate(-5deg); }
   100% { transform: rotate(0deg); }
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(150px, -100px) scale(1.2); }
+  66% { transform: translate(-100px, 150px) scale(0.8); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.animate-orb {
+  animation: float 7s infinite ease-in-out;
+}
+
+.animate-orb-delayed {
+  animation: float 9s infinite ease-in-out -2s;
+}
+
+.animate-orb-slow {
+  animation: float 11s infinite ease-in-out -4s;
+}
+
+.glass-card-hover {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15);
+}
+
+[class~="dark"] .glass-card-hover:hover {
+  box-shadow: 0 20px 50px rgba(168, 85, 247, 0.3);
 }
 
 body {
@@ -33,11 +66,6 @@ body {
   transition-duration: 300ms;
 }
 
-/* Dark mode fallback using standard CSS variables */
-[class~="dark"] body {
-  background-color: #09090b; /* zinc-950 */
-  color: #f4f4f5; /* zinc-100 */
-}
 
 /* Standard CSS Classes instead of @layer */
 .bg-gradient-insta {

@@ -18,7 +18,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await apiService.login(email, password);
+      await apiService.login({ email, password });
       toast.success('Welcome back, creator! ⚡');
       navigate('/dashboard');
     } catch (err: any) {
@@ -50,16 +50,12 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-4">
-      
-      {/* Animated Login Card */}
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="w-full max-w-[400px] bg-white rounded-[32px] p-10 shadow-2xl"
       >
-        
-        {/* Logo Section */}
         <motion.div variants={itemVariants} className="flex flex-col items-center mb-10">
           <div className="flex items-center space-x-2 mb-8">
             <motion.div 
@@ -74,7 +70,6 @@ const Login = () => {
         </motion.div>
 
         <form onSubmit={handleLogin} className="space-y-6">
-          {/* Error Message */}
           {error && (
             <motion.div 
               initial={{ opacity: 0, x: -10 }}
@@ -85,7 +80,6 @@ const Login = () => {
             </motion.div>
           )}
 
-          {/* Email Input */}
           <motion.div variants={itemVariants} className="space-y-2">
             <label className="text-xs font-bold text-slate-500 ml-1">Email</label>
             <input 
@@ -97,11 +91,10 @@ const Login = () => {
                 setError(null);
               }}
               placeholder="you@example.com"
-              className={`w-full bg-slate-50 border border-transparent focus:bg-white focus:border-purple-200 rounded-xl py-3.5 px-4 text-sm outline-none transition-all ${error ? 'border-red-200 bg-red-50/30' : ''}`}
+              className={`w-full bg-slate-50 border border-transparent focus:bg-white focus:border-purple-200 rounded-xl py-3.5 px-4 text-sm font-bold text-slate-800 outline-none transition-all ${error ? 'border-red-200 bg-red-50/30' : ''}`}
             />
           </motion.div>
 
-          {/* Password Input */}
           <motion.div variants={itemVariants} className="space-y-2">
             <label className="text-xs font-bold text-slate-500 ml-1">Password</label>
             <input 
@@ -113,11 +106,10 @@ const Login = () => {
                 setError(null);
               }}
               placeholder="••••••••"
-              className={`w-full bg-slate-50 border border-transparent focus:bg-white focus:border-purple-200 rounded-xl py-3.5 px-4 text-sm outline-none transition-all ${error ? 'border-red-200 bg-red-50/30' : ''}`}
+              className={`w-full bg-slate-50 border border-transparent focus:bg-white focus:border-purple-200 rounded-xl py-3.5 px-4 text-sm font-bold text-slate-800 outline-none transition-all ${error ? 'border-red-200 bg-red-50/30' : ''}`}
             />
           </motion.div>
 
-          {/* Sign In Button */}
           <motion.button 
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -2 }}
@@ -142,7 +134,6 @@ const Login = () => {
           </p>
         </motion.div>
       </motion.div>
-
     </div>
   );
 };

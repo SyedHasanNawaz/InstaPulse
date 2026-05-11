@@ -1,80 +1,112 @@
-# InstaPulse - Social Media Content Optimization Platform
+# 🌟 InstaPulse
 
-InstaPulse is a web application designed to help content creators optimize their social media presence using AI-driven insights and a modular backend architecture.
+### The Future of Social Media Content Optimization
 
-## 🚀 Features
-- **Modular Backend**: Built with FastAPI for high performance and scalability.
-- **JWT Authentication**: Secure login and signup system with session management.
-- **Integrated Frontend**: Modern UI using Tailwind CSS and Vanilla JavaScript.
-- **AI-Ready**: Dedicated module for Machine Learning models and data preprocessing.
+InstaPulse is a premium, AI-driven platform designed to empower content creators with data-backed insights. By leveraging advanced machine learning models and a sleek, high-performance architecture, InstaPulse helps you predict viral potential, optimize engagement, and manage your social presence with style.
 
 ---
 
-## 🛠️ Installation & Setup
+## ✨ Key Features
 
-Follow these steps to run the project on your local machine.
+### 🧠 AI-Powered Analytics
+- **Pulse Score**: Get a real-time "health check" for your content before you post.
+- **Viral Prediction**: AI models analyze your drafts to predict reach and engagement potential.
+- **Optimization Advisor**: Get actionable tips on the best times to post, hashtag strategy, and visual improvements.
+
+### 🎨 Premium UI/UX
+- **Modern Aesthetics**: A stunning "Glassmorphism" design with deep purple accents and vibrant gradients.
+- **Dynamic Animations**: Powered by **Framer Motion** for a fluid, premium feel.
+- **Dark Mode Optimized**: Native dark mode support for a comfortable creator experience.
+- **Interactive Dashboard**: Real-time data visualization of your social performance.
+
+### 🛡️ Secure & Scalable
+- **JWT Authentication**: Industrial-grade security for user accounts.
+- **Security Guard**: Auto-session management and secure password hashing.
+- **Profile Management**: Real-time updates for usernames, emails, and security settings.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 18** with **Vite** for blazing-fast development.
+- **Tailwind CSS** & Vanilla CSS for highly customized, responsive layouts.
+- **Framer Motion** for world-class micro-interactions and transitions.
+- **Lucide Icons** for a clean, consistent visual language.
+
+### Backend
+- **FastAPI** (Python) for a high-performance, asynchronous API.
+- **SQLAlchemy** with **PostgreSQL** for robust data persistence.
+- **Scikit-Learn** for the core Machine Learning intelligence.
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to launch InstaPulse on your local machine.
 
 ### 1. Prerequisites
 - **Python 3.9+**
+- **Node.js 18+**
 - **PostgreSQL** (running locally)
-- **Git**
 
-### 2. Clone the Repository
-```bash
-git clone https://github.com/SyedHasanNawaz/InstaPulse.git
-cd InstaPulse
-```
-
-### 3. Backend Setup
-Navigate to the backend directory and set up your environment:
-
-```bash
-cd backend
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-# On Windows:
-venv\Scripts\activate
-# On Mac/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### 4. Environment Variables
-Create a `.env` file in the `backend/` directory and add your configuration:
-```env
-DATABASE_URL=postgresql+asyncpg://user:password@localhost/instapulse_db
-SECRET_KEY=your_super_secret_key_here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-```
-
-### 5. Run the Server
-```bash
-uvicorn app.main:app --reload
-```
-The API will be available at `http://127.0.0.1:8000`. You can view the interactive documentation at `http://127.0.0.1:8000/docs`.
-
----
-
-## 🎨 Frontend Setup
-The frontend is built with static HTML and Vanilla JS, so no heavy installation is required.
-
-1. Open a new terminal in the root folder.
-2. Run a simple HTTP server (optional but recommended):
+### 2. Backend Setup
+1. Navigate to the `backend` directory:
    ```bash
-   python -m http.server 3000
+   cd backend
    ```
-3. Open your browser and go to `http://localhost:3000/frontend/login.html`.
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Mac/Linux
+   # OR
+   venv\Scripts\activate     # Windows
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the server:
+   ```bash
+   uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+   *The API will be live at `http://127.0.0.1:8000/docs`*
+
+### 3. Frontend Setup
+1. Navigate to the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser to `http://localhost:5173`.
 
 ---
 
 ## 📂 Project Structure
-- `backend/`: FastAPI application, routes, services, and models.
-- `frontend/`: HTML, CSS, and JS files for the user interface.
-- `ml_model/`: Python scripts for data preprocessing and ML model logic.
-- `docs/`: Project documentation and requirement specifications.
+
+```text
+├── backend/            # FastAPI Application
+│   ├── app/            # Core logic (Routes, Services, Models)
+│   ├── uploads/        # User-uploaded content
+│   └── requirements.txt
+├── frontend/           # React + Vite Application
+│   ├── src/            # Components, Pages, Context, Services
+│   └── public/         # Static assets
+├── ml_model/           # AI Architecture & Preprocessing
+└── docs/               # Technical documentation
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Feel free to open an issue or submit a pull request to help make InstaPulse even better.
+
+**InstaPulse — Optimize your pulse, capture the world.**

@@ -14,8 +14,8 @@ const Reels = () => {
     {
       id: 1,
       user: 'adventure_seeker',
-      avatar: 'https://i.pravatar.cc/100?img=11',
-      video_placeholder: 'https://images.unsplash.com/photo-1518837697219-af0c3a7c0d69?w=800&q=80',
+      avatar: 'https://i.pravatar.cc/150?u=adventure',
+      video_placeholder: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1000&q=80',
       caption: 'The power of nature is unmatched. #waterfall #nature #adventure',
       music: 'Original Audio - Nature Sounds',
       likes: '45.2K',
@@ -25,8 +25,8 @@ const Reels = () => {
     {
       id: 2,
       user: 'chef_master',
-      avatar: 'https://i.pravatar.cc/100?img=5',
-      video_placeholder: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80',
+      avatar: 'https://i.pravatar.cc/150?u=chef',
+      video_placeholder: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1000&q=80',
       caption: 'Secret pasta recipe revealed! 🍝 #cooking #recipe #foodie',
       music: 'Italian Classics - Instrumental',
       likes: '128K',
@@ -36,8 +36,8 @@ const Reels = () => {
     {
       id: 3,
       user: 'tech_insider',
-      avatar: 'https://i.pravatar.cc/100?img=8',
-      video_placeholder: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80',
+      avatar: 'https://i.pravatar.cc/150?u=tech',
+      video_placeholder: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1000&q=80',
       caption: 'Top 5 productivity hacks for developers. #tech #tips #coding',
       music: 'Lo-fi Beats - Focus',
       likes: '89K',
@@ -50,16 +50,20 @@ const Reels = () => {
     <div className="h-[calc(100vh-120px)] w-full flex items-center justify-center animate-in fade-in duration-700">
       
       {/* Reels Container with Snap Scrolling */}
-      <div className="h-full aspect-[9/16] bg-black rounded-[40px] shadow-2xl overflow-y-scroll snap-y snap-mandatory no-scrollbar relative border-[8px] border-slate-900">
+      <div className="h-full aspect-[9/16] bg-slate-900 rounded-[40px] shadow-2xl overflow-y-scroll snap-y snap-mandatory no-scrollbar relative border-[8px] border-slate-900">
         
         {reels.map((reel) => (
-          <div key={reel.id} className="h-full w-full snap-start relative group flex flex-col justify-end">
+          <div key={reel.id} className="h-full w-full snap-start relative group flex flex-col justify-end bg-gradient-to-br from-slate-800 to-slate-900">
             
             {/* Background Image (Mocking Video) */}
             <img 
               src={reel.video_placeholder} 
               alt="Reel content" 
               className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-700" 
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
 
             {/* AI Score Badge */}

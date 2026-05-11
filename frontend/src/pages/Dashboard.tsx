@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { 
   TrendingUp, 
   FileText, 
@@ -24,6 +24,7 @@ import {
 import { Line, Bar } from 'react-chartjs-2';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import { useAI } from '../context/AIContext';
 import Skeleton from '../components/Skeleton';
 
 ChartJS.register(
@@ -40,20 +41,22 @@ ChartJS.register(
 
 const Dashboard = () => {
   const { theme } = useTheme();
+  const { dashboardData: data, loadingDashboard: loading, getDashboardData } = useAI();
   const isDark = theme === 'dark';
-  const [loading, setLoading] = useState(true);
 
-  // Reduced loading state to 0.5s for a snappier feel!
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
+    getDashboardData();
   }, []);
+
+  if (loading || !data) {
+    return <DashboardSkeleton />;
+  }
 
   const engagementData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [{
       label: 'Engagement Rate',
-      data: [65, 72, 68, 85, 82, 95, 92],
+      data: data.weeklyTrend,
       borderColor: isDark ? '#c084fc' : '#a855f7',
       backgroundColor: isDark ? 'rgba(192, 132, 252, 0.1)' : 'rgba(168, 85, 247, 0.1)',
       fill: true,
@@ -66,7 +69,7 @@ const Dashboard = () => {
   const timesData = {
     labels: ['6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
     datasets: [{
-      data: [12, 28, 45, 38, 62, 58],
+      data: data.hourlyEngagement,
       backgroundColor: isDark ? '#f472b6' : '#ec4899',
       borderRadius: 8,
       barThickness: 32
@@ -83,15 +86,21 @@ const Dashboard = () => {
         titleColor: isDark ? '#f8fafc' : '#0f172a',
         bodyColor: isDark ? '#f8fafc' : '#0f172a',
         borderColor: isDark ? '#27272a' : '#e2e8f0',
-        borderWidth: 1
+        borderWidth: 1,
+        callbacks: {
+          label: (context: any) => `${context.parsed.y.toFixed(1)}%`
+        }
       }
     },
     scales: {
       y: { 
         beginAtZero: true, 
-        max: 100, 
         grid: { color: isDark ? '#27272a' : '#f1f5f9' }, 
-        ticks: { color: '#71717a', font: { size: 10 } } 
+        ticks: { 
+          color: '#71717a', 
+          font: { size: 10 },
+          callback: (value: any) => `${value}%`
+        } 
       },
       x: { 
         grid: { display: false }, 
@@ -99,10 +108,6 @@ const Dashboard = () => {
       }
     }
   };
-
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
 
   const container = {
     hidden: { opacity: 0 },
@@ -134,16 +139,16 @@ const Dashboard = () => {
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
       >
         <motion.div variants={item}>
-          <MetricCard title="Avg. Engagement" value="78.5%" trend="+12%" icon={TrendingUp} iconColor="text-purple-600 dark:text-purple-400" bgColor="bg-purple-50 dark:bg-purple-900/20" />
+          <MetricCard title="Avg. Engagement" value={data.avgEngagement} trend="+12%" icon={TrendingUp} iconColor="text-purple-600 dark:text-purple-400" bgColor="bg-purple-50 dark:bg-purple-900/20" />
         </motion.div>
         <motion.div variants={item}>
-          <MetricCard title="Posts Analyzed" value="142" trend="+8 new" icon={FileText} iconColor="text-pink-600 dark:text-pink-400" bgColor="bg-pink-50 dark:bg-pink-900/20" />
+          <MetricCard title="Posts Analyzed" value={data.postsAnalyzed.toString()} trend="+8 new" icon={FileText} iconColor="text-pink-600 dark:text-pink-400" bgColor="bg-pink-50 dark:bg-pink-900/20" />
         </motion.div>
         <motion.div variants={item}>
-          <MetricCard title="Optimization Score" value="92/100" subtext="Excellent performance" icon={Zap} iconColor="text-orange-600 dark:text-orange-400" bgColor="bg-orange-50 dark:bg-orange-900/20" />
+          <MetricCard title="Optimization Score" value={data.optimizationScore} subtext="Excellent performance" icon={Zap} iconColor="text-orange-600 dark:text-orange-400" bgColor="bg-orange-50 dark:bg-orange-900/20" />
         </motion.div>
         <motion.div variants={item}>
-          <MetricCard title="Best Time Today" value="6:00 PM" subtext="Peak engagement time" icon={Clock} iconColor="text-blue-600 dark:text-blue-400" bgColor="bg-blue-50 dark:bg-blue-900/20" />
+          <MetricCard title="Best Time Today" value={data.bestTimeToday} subtext="Peak engagement time" icon={Clock} iconColor="text-blue-600 dark:text-blue-400" bgColor="bg-blue-50 dark:bg-blue-900/20" />
         </motion.div>
       </motion.div>
 
@@ -153,7 +158,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm"
+          className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm glass-card-hover"
         >
           <div className="mb-6">
             <h3 className="font-bold text-slate-900 dark:text-white">Weekly Engagement Trend</h3>
@@ -168,7 +173,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm"
+          className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm glass-card-hover"
         >
           <div className="mb-6">
             <h3 className="font-bold text-slate-900 dark:text-white">Best Posting Times</h3>
@@ -182,19 +187,25 @@ const Dashboard = () => {
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm">
+        <div className="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm glass-card-hover">
           <h3 className="font-bold text-slate-900 dark:text-white mb-6">Recent Posts</h3>
           <div className="space-y-4">
-            <PostItem title="Coffee and productivity tips..." engagement="92%" change="+5%" image="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&q=80" />
-            <PostItem title="Beach sunset from my recent trip..." engagement="88%" change="+3%" image="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&q=80" />
-            <PostItem title="Delicious homemade pasta recipe..." engagement="75%" change="-2%" isNegative image="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" />
+            {data.recentPosts.map((post: any, idx: number) => (
+              <PostItem 
+                key={idx}
+                title={post.title} 
+                engagement={post.engagement} 
+                change={post.change} 
+                image={post.image} 
+              />
+            ))}
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm">
+        <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm glass-card-hover">
           <h3 className="font-bold text-slate-900 dark:text-white mb-6">Quick Tips</h3>
           <div className="space-y-4">
-            <TipItem icon={Clock} color="text-blue-500 dark:text-blue-400" bg="bg-blue-50 dark:bg-blue-900/20" text="Post between 6-8 PM for max engagement" />
+            <TipItem icon={Clock} color="text-blue-500 dark:text-blue-400" bg="bg-blue-50 dark:bg-blue-900/20" text={`Post between ${data.bestTimeToday} for max engagement`} />
             <TipItem icon={Plus} color="text-purple-500 dark:text-purple-400" bg="bg-purple-50 dark:bg-purple-900/20" text="Use 8-12 hashtags per post" />
             <TipItem icon={Zap} color="text-pink-500 dark:text-pink-400" bg="bg-pink-50 dark:bg-pink-900/20" text="Add question in caption" />
           </div>
@@ -243,7 +254,7 @@ const MetricCard = ({ title, value, trend, subtext, icon: Icon, iconColor, bgCol
   <motion.div 
     whileHover={{ y: -5, scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
-    className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all cursor-default group"
+    className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm transition-all cursor-default group glass-card-hover"
   >
     <div className="flex justify-between items-start mb-4">
       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{title}</span>

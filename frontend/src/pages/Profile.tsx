@@ -10,8 +10,30 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+
+import { useEffect, useState } from 'react';
+import { apiService } from '../services/api';
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await apiService.getMe();
+        setUserData(data);
+      } catch (error) {
+        console.error('Failed to fetch profile user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
   const posts = [
     { id: 1, image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80' },
     { id: 2, image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80' },
@@ -29,17 +51,25 @@ const Profile = () => {
           {/* Avatar */}
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-1 shrink-0">
             <div className="w-full h-full rounded-full border-4 border-white dark:border-zinc-900 bg-white dark:bg-zinc-900 overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&q=80" alt="" className="w-full h-full object-cover" />
+              <img src={userData?.profile_image || `https://i.pravatar.cc/150?u=${userData?.id || 'default'}`} alt="" className="w-full h-full object-cover" />
             </div>
           </div>
 
           {/* Info */}
           <div className="flex-1 text-center md:text-left">
             <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">syed_hasan</h3>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{userData?.username || 'user_profile'}</h3>
               <div className="flex items-center justify-center md:justify-start space-x-2">
-                <button className="px-6 py-2 bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl text-sm font-bold hover:opacity-90 transition-all">Edit Profile</button>
-                <button className="p-2 bg-slate-50 dark:bg-zinc-800 rounded-xl text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-700 transition-all">
+                <button 
+                  onClick={() => navigate('/settings')}
+                  className="px-6 py-2 bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
+                >
+                  Edit Profile
+                </button>
+                <button 
+                  onClick={() => navigate('/settings')}
+                  className="p-2 bg-slate-50 dark:bg-zinc-800 rounded-xl text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:hover:bg-zinc-700 transition-all"
+                >
                   <Settings size={20} />
                 </button>
               </div>
@@ -52,11 +82,9 @@ const Profile = () => {
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-bold text-slate-900 dark:text-zinc-200">Syed Hasan Nawaz</p>
-              <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed max-w-lg">
-                🚀 Creator & Social Media Strategist<br />
-                📈 Helping brands optimize their Pulse scores.<br />
-                📍 Digital Nomad based in London.
+              <p className="text-sm font-bold text-slate-900 dark:text-zinc-200">{userData?.username}</p>
+              <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed max-w-lg whitespace-pre-line">
+                {userData?.bio || "🚀 Creator & Social Media Strategist\n📈 Helping brands optimize their Pulse scores.\n📍 Digital Nomad based in London."}
               </p>
             </div>
 

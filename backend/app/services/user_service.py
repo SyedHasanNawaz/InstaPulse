@@ -3,24 +3,20 @@ from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from ..models import User
-from ..schemas import UserCreate
+from ..schemas import UserCreate, UserUpdate
 from ..utils.security import get_password_hash
-
 
 async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
     result = await db.execute(select(User).filter(User.id == user_id))
     return result.scalars().first()
 
-
 async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
     result = await db.execute(select(User).filter(User.username == username))
     return result.scalars().first()
 
-
 async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
     result = await db.execute(select(User).filter(User.email == email))
     return result.scalars().first()
-
 
 async def create_user(db: AsyncSession, user_in: UserCreate) -> User:
     # Check if username or email exists
@@ -38,7 +34,7 @@ async def create_user(db: AsyncSession, user_in: UserCreate) -> User:
     db_user = User(
         username=user_in.username,
         email=user_in.email,
-        hashed_password=get_password_hash(user_in.password),
+        hashed_password=get_password_hash(user_in.password)
     )
     db.add(db_user)
     try:
@@ -51,3 +47,31 @@ async def create_user(db: AsyncSession, user_in: UserCreate) -> User:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Could not register user due to a database constraint.",
         )
+
+async def update_user(db: AsyncSession, db_user: User, user_in: UserUpdate) -> User:
+    # Check if username or email is being changed and if they already exist
+    if user_in.username and user_in.username != db_user.username:
+        if await get_user_by_username(db, user_in.username):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already taken",
+            )
+        db_user.username = user_in.username
+
+    if user_in.email and user_in.email != db_user.email:
+        if await get_user_by_email(db, user_in.email):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered",
+            )
+        db_user.email = user_in.email
+
+    if user_in.password:
+        db_user.hashed_password = get_password_hash(user_in.password)
+    
+    if user_in.bio is not None:
+        db_user.bio = user_in.bio
+
+    await db.commit()
+    await db.refresh(db_user)
+    return db_user
