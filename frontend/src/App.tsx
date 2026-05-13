@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ThemeProvider } from './context/ThemeContext';
 import { AIProvider } from './context/AIContext';
 import { Toaster } from 'react-hot-toast';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -137,6 +138,7 @@ function App() {
             />
             <Route path="*" element={<div className="p-8 text-center font-bold">Page coming soon!</div>} />
           </Routes>
+          <Chatbot />
         </Router>
       </AIProvider>
     </ThemeProvider>

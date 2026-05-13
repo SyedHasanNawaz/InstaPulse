@@ -27,7 +27,7 @@ async def startup():
         if project_root not in sys.path:
             sys.path.append(project_root)
             
-        from ml_model.InstaPulse import get_trained_model, get_dashboard_stats
+        from ml_model.InstaMetrics import get_trained_model, get_dashboard_stats
         import threading
         # Run in a thread so startup isn't blocked too long, but it starts immediately
         threading.Thread(target=get_trained_model, daemon=True).start()

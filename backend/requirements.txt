@@ -6,3 +6,12 @@ alembic
 passlib[bcrypt]
 python-jose[cryptography]
 pydantic-settings
+groq
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+textblob
+joblib
+aiosqlite

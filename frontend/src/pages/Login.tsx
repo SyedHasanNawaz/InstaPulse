@@ -64,7 +64,7 @@ const Login = () => {
             >
               <Zap className="text-white w-6 h-6" />
             </motion.div>
-            <span className="text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent">InstaPulse</span>
+            <span className="text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent">InstaMetrics</span>
           </div>
           <h2 className="text-xl font-bold text-slate-700">Welcome back</h2>
         </motion.div>

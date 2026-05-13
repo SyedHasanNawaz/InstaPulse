@@ -29,7 +29,7 @@ const Sidebar = () => {
         <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/30">
           <Zap className="text-white w-5 h-5" />
         </div>
-        <h1 className="text-xl font-black tracking-tighter text-white">InstaPulse</h1>
+        <h1 className="text-xl font-black tracking-tighter text-white">InstaMetrics</h1>
       </div>
       
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">

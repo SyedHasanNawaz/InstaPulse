@@ -51,7 +51,7 @@ const Signup = () => {
 
     try {
       await apiService.signup(fullName, email, password);
-      toast.success('Account created! Welcome to InstaPulse 🚀');
+      toast.success('Account created! Welcome to InstaMetrics 🚀');
       navigate('/login');
     } catch (err: any) {
       const msg = err.message || 'Signup failed';
@@ -100,7 +100,7 @@ const Signup = () => {
             >
               <Zap className="text-white w-6 h-6" />
             </motion.div>
-            <span className="text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent">InstaPulse</span>
+            <span className="text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent">InstaMetrics</span>
           </div>
           <h2 className="text-xl font-bold text-slate-700">Create account</h2>
         </motion.div>

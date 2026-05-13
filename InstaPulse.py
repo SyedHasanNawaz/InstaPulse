@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import os
-import ollama
+from groq import Groq
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -131,15 +131,20 @@ def get_optimization_advice(content_category="Technology", media_type="reel", fo
 
 def refine_caption(original_caption):
     try:
-        model_name = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+        api_key = os.getenv("GROQ_API_KEY")
+        model_name = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
         prompt = f"""
         Instagram Expert: Refine this caption to be more engaging. 
         Provide 3 variations: 'The Hook', 'The Story', and 'The Pro'.
         Format as JSON: {{"Hook": "...", "Story": "...", "Pro": "..."}}
         Original: {original_caption}
         """
-        response = ollama.chat(messages=[{"role": "user", "content": prompt}], model=model_name)
-        text = response['message']['content']
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model=model_name,
+        )
+        text = response.choices[0].message.content
         # Try to parse JSON from response
         try:
             start = text.find('{')
@@ -156,10 +161,15 @@ def refine_caption(original_caption):
 
 def fetch_ollama_advice(content_category, media_type):
     try:
-        model_name = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+        api_key = os.getenv("GROQ_API_KEY")
+        model_name = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
         prompt = f"Instagram Expert: Give 5 hashtags for a {media_type} about {content_category}."
-        response = ollama.chat(messages=[{"role": "user", "content": prompt}], model=model_name)
-        return response['message']['content']
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model=model_name,
+        )
+        return response.choices[0].message.content
     except:
         return None
 

@@ -7,10 +7,10 @@ import os
 # Add ml_model to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 try:
-    from ml_model import InstaPulse
+    from ml_model import InstaMetrics
 except ImportError:
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-    from ml_model import InstaPulse
+    from ml_model import InstaMetrics
 
 from ..utils.deps import get_db, get_current_user
 from ..models import AIAnalysis, User
@@ -26,7 +26,7 @@ executor = ThreadPoolExecutor(max_workers=3)
 async def get_dashboard_data(current_user: User = Depends(get_current_user)):
     try:
         loop = asyncio.get_event_loop()
-        stats = await loop.run_in_executor(executor, InstaPulse.get_dashboard_stats)
+        stats = await loop.run_in_executor(executor, InstaMetrics.get_dashboard_stats)
         return stats
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -43,7 +43,7 @@ async def get_optimization_data(
 ):
     try:
         loop = asyncio.get_event_loop()
-        advice = await loop.run_in_executor(executor, lambda: InstaPulse.get_optimization_advice(category, media_type, followers, day, hour))
+        advice = await loop.run_in_executor(executor, lambda: InstaMetrics.get_optimization_advice(category, media_type, followers, day, hour))
         
         # Save to history
         new_analysis = AIAnalysis(
@@ -85,7 +85,7 @@ async def refine_caption(data: dict, current_user: User = Depends(get_current_us
     try:
         caption = data.get("caption", "")
         loop = asyncio.get_event_loop()
-        refined = await loop.run_in_executor(executor, lambda: InstaPulse.refine_caption(caption))
+        refined = await loop.run_in_executor(executor, lambda: InstaMetrics.refine_caption(caption))
         return refined
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

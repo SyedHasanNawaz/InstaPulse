@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import os
-import ollama
+from groq import Groq
 import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -38,8 +38,9 @@ def load_env_file():
                     os.environ[key] = value
 
 load_env_file()
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
-print(f"Using AI Model: {OLLAMA_MODEL}")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+print(f"Using Groq API for AI Features (Model: {GROQ_MODEL})")
 
 # Global path settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -211,10 +212,14 @@ def instagram_ai_pipeline(follower_count, caption_length, hashtags_count, post_h
     RULES: Use emojis, strong hooks, and NO generic hashtags like #instagram or #explore. Output ONLY the captions and hashtags.
     """
     try:
-        response = ollama.chat(messages=[{"role": "user", "content": prompt}], model=OLLAMA_MODEL)
-        ai_generated_text = response['message']['content']
+        client = Groq(api_key=GROQ_API_KEY)
+        response = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model=GROQ_MODEL,
+        )
+        ai_generated_text = response.choices[0].message.content
     except Exception as e:
-        print(f"Error calling Ollama ({OLLAMA_MODEL}): {e}")
+        print(f"Error calling Groq ({GROQ_MODEL}): {e}")
         ai_generated_text = f"#growth #viral #{content_category.lower()} #{media_type.lower()}"
 
     # ========== TERMINAL OUTPUT (only when verbose) ==========
@@ -352,8 +357,12 @@ def refine_caption(original_caption):
     No conversational filler.
     """
     try:
-        response = ollama.chat(messages=[{"role": "user", "content": prompt}], model=OLLAMA_MODEL)
-        text = response['message']['content']
+        client = Groq(api_key=GROQ_API_KEY)
+        response = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model=GROQ_MODEL,
+        )
+        text = response.choices[0].message.content
         
         # More robust JSON extraction
         import re
